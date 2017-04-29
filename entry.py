@@ -29,10 +29,14 @@ class Core:
         self.data_instance = mdl_data.MdlData()
 
         self.ls_attr_sources = ['O', 'W', 'L']
-        self.ls_attr_cate = ['A','LF','CF','N/A','QF','Q','S','AF','L','C']
+        self.ls_attr_cate = ['A','LF','CF','QF','Q','S','AF','L','C']
+        self.ls_doc_type = ['O','S','B']
+        self.ls_docinfo_type = ['U','O','S']
+        self.ls_info_provided = ['A','T','D','P','O']
 
     def gen_matrix(self, data, ls_attr):
 
+        pool_kappa = []
         for kappa_code in ls_attr:
             array = numpy.zeros((2, 2))
             for item in data:
@@ -94,7 +98,21 @@ class Core:
                                     array[1, 1] += 1
 
             print array
-            print self.kappa(array, len(data))
+            result = self.kappa(array, len(data))
+            print "Code", kappa_code ,"kappa = ", result[2]
+            pool_kappa.append(result)
+        pool_p0 = 0
+        pool_pe = 0
+        pool_divider = 0
+        for kappa in pool_kappa:
+            pool_p0 += kappa[0]
+            pool_pe += kappa[1]
+            pool_divider += (1-kappa[1])
+        pool_kappa = (pool_p0 - pool_pe) / pool_divider
+        print "pool_kappa = ", pool_kappa
+
+
+
 
 
             #
@@ -125,9 +143,22 @@ class Core:
     def cal_Kappa(self,data,code_type):
 
         if code_type is "sources":
+            print "Sources:"
             self.gen_matrix(data, self.ls_attr_sources)
         elif code_type is "cate":
+            print "Categories:"
+            print data
             self.gen_matrix(data, self.ls_attr_cate)
+        elif code_type is "doctype":
+            print "Doctype:"
+            #print data
+            self.gen_matrix(data, self.ls_doc_type)
+        elif code_type is "docinfotype":
+            print "Docinfo type:"
+            self.gen_matrix(data, self.ls_docinfo_type)
+        elif code_type is "infoprovided":
+            print "Info provided:"
+            self.gen_matrix(data, self.ls_info_provided)
 
 
     def kappa(self,arr,length):
@@ -138,14 +169,22 @@ class Core:
 
         kappa = (p0-p_e)/(1-p_e)
 
-        return kappa
+        ls = [p0,p_e,kappa]
+
+
+        return ls
 
 
 
     def entry(self):
         #print self.data_instance.get_sources()
 
-        self.cal_Kappa(self.data_instance.get_sources(),"sources")
+        self.cal_Kappa(self.data_instance.get_sources(), "sources")
+        self.cal_Kappa(self.data_instance.get_cate(), "cate")
+        #self.cal_Kappa(self.data_instance.get_doc_type(), "doctype")
+        #self.cal_Kappa(self.data_instance.get_docinfo_type(), "docinfotype")
+        #self.cal_Kappa(self.data_instance.get_info_provided(),"infoprovided")
+
 
 
 
