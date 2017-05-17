@@ -34,6 +34,9 @@ class Core:
         self.ls_docinfo_type = ['U','O','S']
         self.ls_info_provided = ['A','T','D','P','O']
 
+        # Modify the content of this list accordingly
+        self.ls_attr = ['U','O','S']
+
     def gen_matrix(self, data, ls_attr):
 
         pool_kappa = []
@@ -112,34 +115,6 @@ class Core:
         print "pool_kappa = ", pool_kappa
 
 
-
-
-
-            #
-            # if item["sc1"] == kappa_code:
-            #     if item["sc2"] == kappa_code:
-            #         array[0,0] += 1
-            #     else:
-            #         array[0,1] += 1
-            # else:
-            #     if item["sc2"] == kappa_code:
-            #         array[1,0] += 1
-            #     else:
-            #         array[1,1] += 1
-
-
-            #
-            # if kappa_code in item["sc1"]:
-            #     if kappa_code in item["sc2"]:
-            #         array[0, 0] += 1
-            #     else:
-            #         array[0, 1] += 1
-            # else:
-            #     if kappa_code in item["sc2"]:
-            #         array[1, 0] += 1
-            #     else:
-            #         array[1, 1] += 1
-
     def cal_Kappa(self,data,code_type):
 
         if code_type is "sources":
@@ -147,7 +122,6 @@ class Core:
             self.gen_matrix(data, self.ls_attr_sources)
         elif code_type is "cate":
             print "Categories:"
-            print data
             self.gen_matrix(data, self.ls_attr_cate)
         elif code_type is "doctype":
             print "Doctype:"
@@ -159,7 +133,10 @@ class Core:
         elif code_type is "infoprovided":
             print "Info provided:"
             self.gen_matrix(data, self.ls_info_provided)
-
+        elif code_type is "common":
+            print "calculate general attr:"
+            print "code list " , self.ls_attr
+            self.gen_matrix(data, self.ls_attr)
 
     def kappa(self,arr,length):
         p_yes = (arr[0,0]+arr[0,1])/length * (arr[0,0]+arr[1,0])/length
@@ -171,19 +148,18 @@ class Core:
 
         ls = [p0,p_e,kappa]
 
-
         return ls
 
 
 
     def entry(self):
-        #print self.data_instance.get_sources()
 
-        self.cal_Kappa(self.data_instance.get_sources(), "sources")
-        self.cal_Kappa(self.data_instance.get_cate(), "cate")
-        #self.cal_Kappa(self.data_instance.get_doc_type(), "doctype")
-        #self.cal_Kappa(self.data_instance.get_docinfo_type(), "docinfotype")
-        #self.cal_Kappa(self.data_instance.get_info_provided(),"infoprovided")
+        # self.cal_Kappa(self.data_instance.get_sources(), "sources")
+        # self.cal_Kappa(self.data_instance.get_cate(), "cate")
+        # self.cal_Kappa(self.data_instance.get_doc_type(), "doctype")
+        # self.cal_Kappa(self.data_instance.get_docinfo_type(), "docinfotype")
+        # self.cal_Kappa(self.data_instance.get_info_provided(),"infoprovided")
+        self.cal_Kappa(self.data_instance.get_attr_coder(), "common")
 
 
 
